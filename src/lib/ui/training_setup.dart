@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:src/app_const.dart';
+import 'package:src/ui/about.dart';
 
 class TrainingSetupPage extends StatefulWidget {
   @override
@@ -10,7 +11,7 @@ class _TrainingSetupState extends State<TrainingSetupPage> {
   static const double _iconWidth = 50;
   static const double _itemPadding = 16;
 
-  Widget _buildAppBar() {
+  Widget _buildAppBar(BuildContext context) {
     return AppBar(
       title: Text('Boxing Timer'),
       actions: <Widget>[
@@ -18,6 +19,7 @@ class _TrainingSetupState extends State<TrainingSetupPage> {
           icon: Icon(Icons.info),
           onPressed: () {
             print('info');
+            Navigator.of(context).push(MaterialPageRoute(builder: (_) => AboutPage()));
           },
         )
       ],
@@ -202,7 +204,7 @@ class _TrainingSetupState extends State<TrainingSetupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(context),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
