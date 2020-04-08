@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:src/app_const.dart';
+import 'package:src/core/stream_observer.dart';
+import 'package:src/core/viewmodels/training_viewmodel.dart';
+import 'package:src/core/extensions/duration_extension.dart';
 import 'package:src/ui/about.dart';
 import 'package:src/ui/training.dart';
 
@@ -11,6 +14,7 @@ class TrainingSetupPage extends StatefulWidget {
 class _TrainingSetupState extends State<TrainingSetupPage> {
   static const double _iconWidth = 50;
   static const double _itemPadding = 16;
+  final _viewmodel = TrainingViewModel();
 
   Widget _buildAppBar(BuildContext context) {
     return AppBar(
@@ -60,19 +64,144 @@ class _TrainingSetupState extends State<TrainingSetupPage> {
     );
   }
 
-  Widget _buildTitle(String title, String sub) {
-    return Expanded(
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Text(
-            title,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24, color: Color(COLORS.redColor)),
+  Widget _roundLengthWidget() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        _buildLeadingIcon(Icons.timelapse),
+        Expanded(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              StreamObserver<Duration>(
+                stream: _viewmodel.roundTime$,
+                onSuccess: (_, Duration data) => Text(
+                  data.print(),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24, color: Color(COLORS.redColor)),
+                ),
+              ),
+              Text('ROUND LENGTH'),
+            ],
           ),
-          Text(sub),
-        ],
-      ),
+        ),
+        Row(
+          children: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.remove_circle_outline,
+              ),
+              iconSize: _iconWidth,
+              onPressed: () {
+                _viewmodel.decRoundTime();
+              },
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.add_circle_outline,
+              ),
+              iconSize: _iconWidth,
+              onPressed: () {
+                _viewmodel.incRoundTime();
+              },
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _restTimeWidget() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        _buildLeadingIcon(Icons.hourglass_empty),
+        Expanded(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              StreamObserver<Duration>(
+                stream: _viewmodel.restTime$,
+                onSuccess: (_, Duration data) => Text(
+                  data.print(),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24, color: Color(COLORS.redColor)),
+                ),
+              ),
+              Text('REST TIME'),
+            ],
+          ),
+        ),
+        Row(
+          children: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.remove_circle_outline,
+              ),
+              iconSize: _iconWidth,
+              onPressed: () {
+                _viewmodel.decRestTime();
+              },
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.add_circle_outline,
+              ),
+              iconSize: _iconWidth,
+              onPressed: () {
+                _viewmodel.incRestTime();
+              },
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _roundWidget() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        _buildLeadingIcon(Icons.alarm),
+        Expanded(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              StreamObserver<int>(
+                stream: _viewmodel.round$,
+                onSuccess: (_, int data) => Text(
+                  data.toString(),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24, color: Color(COLORS.redColor)),
+                ),
+              ),
+              Text('ROUNDs'),
+            ],
+          ),
+        ),
+        Row(
+          children: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.remove_circle_outline,
+              ),
+              iconSize: _iconWidth,
+              onPressed: () {
+                _viewmodel.decRound();
+              },
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.add_circle_outline,
+              ),
+              iconSize: _iconWidth,
+              onPressed: () {
+                _viewmodel.incRound();
+              },
+            ),
+          ],
+        ),
+      ],
     );
   }
 
@@ -96,89 +225,17 @@ class _TrainingSetupState extends State<TrainingSetupPage> {
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.symmetric(vertical: _itemPadding),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                _buildLeadingIcon(Icons.timelapse),
-                _buildTitle('03:00', 'ROUND LENGTH'),
-                Row(
-                  children: <Widget>[
-                    IconButton(
-                      icon: Icon(
-                        Icons.remove_circle_outline,
-                      ),
-                      iconSize: _iconWidth,
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.add_circle_outline,
-                      ),
-                      iconSize: _iconWidth,
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-              ],
-            ),
+            child: _roundLengthWidget(),
           ),
           _buildSeparator(),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: _itemPadding),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                _buildLeadingIcon(Icons.hourglass_empty),
-                _buildTitle('01:00', 'REST TIME'),
-                Row(
-                  children: <Widget>[
-                    IconButton(
-                      icon: Icon(
-                        Icons.remove_circle_outline,
-                      ),
-                      iconSize: _iconWidth,
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.add_circle_outline,
-                      ),
-                      iconSize: _iconWidth,
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-              ],
-            ),
+            child: _restTimeWidget(),
           ),
           _buildSeparator(),
           Padding(
             padding: const EdgeInsets.symmetric(vertical: _itemPadding),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                _buildLeadingIcon(Icons.alarm),
-                _buildTitle('3', 'ROUNDs'),
-                Row(
-                  children: <Widget>[
-                    IconButton(
-                      icon: Icon(
-                        Icons.remove_circle_outline,
-                      ),
-                      iconSize: _iconWidth,
-                      onPressed: () {},
-                    ),
-                    IconButton(
-                      icon: Icon(
-                        Icons.add_circle_outline,
-                      ),
-                      iconSize: _iconWidth,
-                      onPressed: () {},
-                    ),
-                  ],
-                ),
-              ],
-            ),
+            child: _roundWidget(),
           ),
         ],
       ),

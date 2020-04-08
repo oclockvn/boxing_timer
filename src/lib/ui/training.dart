@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:src/app_const.dart';
+import 'package:src/core/viewmodels/training_viewmodel.dart';
 
 class TrainingPage extends StatefulWidget {
   @override
@@ -7,6 +8,8 @@ class TrainingPage extends StatefulWidget {
 }
 
 class _TrainingState extends State<TrainingPage> {
+  final viewmodel = TrainingViewModel();
+
   Widget _appBar() {
     return AppBar(
       title: const Text('Fight'),
