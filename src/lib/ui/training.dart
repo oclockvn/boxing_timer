@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:src/app_const.dart';
 import 'package:src/core/extensions/duration_extension.dart';
@@ -22,12 +23,13 @@ class _TrainingState extends State<TrainingPage> {
   int _currentRound = 0;
   String _activity = "Get Ready";
   Duration _counter;
+  bool _isTraining = false;
 
   @override
   initState() {
     _counter = widget.roundTime;
     super.initState();
-    // _startTraining();
+
     _gettingReady();
   }
 
@@ -60,7 +62,7 @@ class _TrainingState extends State<TrainingPage> {
       total = total + rest;
     }
 
-    var padding = round + (round - 2); // round + relax
+    var padding = round + max(0, round - 2); // round + relax
     total = total + Duration(seconds: padding);
 
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
@@ -74,7 +76,22 @@ class _TrainingState extends State<TrainingPage> {
       }
     });
 
+    _toggleTraining();
     _nextRound();
+  }
+
+  void _toggleTraining({bool stop = false}) {
+    setState(() {
+      _isTraining = !_isTraining;
+    });
+
+    // _timer.isActive = !_timer.isActive;
+    //_timer.
+    if (stop) {
+      _cancelTimer(_timer);
+      _cancelTimer(_roundTimer);
+      _cancelTimer(_restTimer);
+    }
   }
 
   void _cancelTimer(Timer timer) {
@@ -121,7 +138,7 @@ class _TrainingState extends State<TrainingPage> {
   Widget _appBar() {
     return AppBar(
       title: const Text('Fight'),
-      automaticallyImplyLeading: false,
+      // automaticallyImplyLeading: false,
     );
   }
 
@@ -145,21 +162,28 @@ class _TrainingState extends State<TrainingPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        IconButton(
-          icon: Icon(Icons.pause_circle_filled),
-          onPressed: () {
-            _timer.cancel();
-          },
-          iconSize: SIZES.iconButtonSize,
-        ),
-        const SizedBox(
-          width: 64,
-        ),
-        IconButton(
-          icon: Icon(Icons.play_circle_filled),
-          onPressed: () {},
-          iconSize: SIZES.iconButtonSize,
-        ),
+        if (_isTraining)
+          IconButton(
+            icon: Icon(
+              Icons.pause_circle_filled,
+              color: Color(COLORS.mainColor),
+            ),
+            onPressed: () {
+              _toggleTraining(stop: true);
+            },
+            iconSize: SIZES.iconButtonSize,
+          ),
+        if (!_isTraining)
+          IconButton(
+            icon: Icon(
+              Icons.play_circle_filled,
+              color: Color(COLORS.mainColor),
+            ),
+            onPressed: () {
+              _toggleTraining(stop: true);
+            },
+            iconSize: SIZES.iconButtonSize,
+          ),
       ],
     );
   }
@@ -209,6 +233,7 @@ class _TrainingState extends State<TrainingPage> {
 
   @override
   void dispose() {
+    print('disposed');
     _cancelTimer(_timer);
     _cancelTimer(_roundTimer);
     _cancelTimer(_restTimer);
