@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:src/app_const.dart';
 import 'package:src/ui/about.dart';
+import 'package:src/ui/training.dart';
 
 class TrainingSetupPage extends StatefulWidget {
   @override
@@ -184,12 +185,12 @@ class _TrainingSetupState extends State<TrainingSetupPage> {
     );
   }
 
-  Widget _buildStartButton() {
+  Widget _buildStartButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: IconButton(
         onPressed: () {
-          print('start');
+          Navigator.of(context).push(MaterialPageRoute(builder: (_) => TrainingPage()));
         },
         icon: Icon(
           Icons.play_circle_filled,
@@ -212,7 +213,7 @@ class _TrainingSetupState extends State<TrainingSetupPage> {
           Expanded(
             child: _buildContent(),
           ),
-          _buildStartButton(),
+          _buildStartButton(context),
         ],
       ),
     );
