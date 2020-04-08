@@ -10,13 +10,46 @@ class TrainingViewModel {
   final BehaviorSubject<int> _round$ = BehaviorSubject.seeded(3);
   final BehaviorSubject<Duration> _roundTime$ = BehaviorSubject.seeded(Duration(minutes: 3));
   final BehaviorSubject<Duration> _restTime$ = BehaviorSubject.seeded(Duration(minutes: 1));
+  final BehaviorSubject<Duration> _trainingLength$ =
+      BehaviorSubject.seeded(Duration(minutes: 11)); // 3 rounds / 3min each round + 2 rest
 
   // public
   Stream<int> get round$ => _round$.stream;
   Stream<Duration> get roundTime$ => _roundTime$.stream;
   Stream<Duration> get restTime$ => _restTime$.stream;
+  Stream<Duration> get trainingLength$ => _trainingLength$.stream;
 
-  TrainingViewModel() {}
+  TrainingViewModel() {
+    _round$.listen((_) {
+      _updateTrainingLength();
+    });
+
+    _roundTime$.listen((_) {
+      _updateTrainingLength();
+    });
+
+    _restTime$.listen((_) {
+      _updateTrainingLength();
+    });
+  }
+
+  void _updateTrainingLength(/*int round, Duration length, Duration rest*/) {
+    var total = Duration();
+    var round = _round$.value;
+    var length = _roundTime$.value;
+    var rest = _restTime$.value;
+
+    for (var i = 0; i < round; i++) {
+      total = total + length;
+    }
+
+    // rest in middle of 2 rounds
+    for (var i = 0; i < round - 1; i++) {
+      total = total + rest;
+    }
+
+    _trainingLength$.add(total);
+  }
 
   void incRound() {
     _round$.add(min(11, _round$.value + 1));
@@ -64,5 +97,12 @@ class TrainingViewModel {
     }
 
     return input;
+  }
+
+  void dispose() {
+    _restTime$.close();
+    _roundTime$.close();
+    _round$.close();
+    _trainingLength$.close();
   }
 }

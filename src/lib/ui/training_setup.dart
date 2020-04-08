@@ -42,14 +42,22 @@ class _TrainingSetupState extends State<TrainingSetupPage> {
     return Container(
       margin: EdgeInsets.only(top: 8, left: 8, right: 8),
       child: Material(
-        shape: ContinuousRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(24))),
-        elevation: 8,
-        color: Color(COLORS.mainColor),
-        child: ListTile(
-          leading: _buildHeaderText('TRAINING LENGTH'),
-          trailing: _buildHeaderText('11:00'),
-        ),
-      ),
+          shape: ContinuousRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(24))),
+          elevation: 8,
+          color: Color(COLORS.mainColor),
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                _buildHeaderText('TRAINING LENGTH'),
+                StreamObserver<Duration>(
+                  stream: _viewmodel.trainingLength$,
+                  onSuccess: (_, Duration length) => _buildHeaderText(length.print()),
+                ),
+              ],
+            ),
+          )),
     );
   }
 
@@ -274,5 +282,11 @@ class _TrainingSetupState extends State<TrainingSetupPage> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _viewmodel.dispose();
+    super.dispose();
   }
 }
