@@ -197,7 +197,7 @@ class _TrainingSetupState extends State<TrainingSetupPage> {
         ),
         padding: EdgeInsets.symmetric(vertical: 8),
         color: Color(COLORS.mainColor),
-        iconSize: 90,
+        iconSize: SIZES.iconButtonSize,
       ),
     );
   }

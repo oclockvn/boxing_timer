@@ -3,3 +3,7 @@ class COLORS {
   static const int textWhite = 0xffffffff;
   static const int redColor = 0xffef5350;
 }
+
+class SIZES {
+  static const double iconButtonSize = 90;
+}
