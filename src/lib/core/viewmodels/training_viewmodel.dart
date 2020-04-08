@@ -13,11 +13,18 @@ class TrainingViewModel {
   final BehaviorSubject<Duration> _trainingLength$ =
       BehaviorSubject.seeded(Duration(minutes: 11)); // 3 rounds / 3min each round + 2 rest
 
+  final BehaviorSubject<int> _currentRound = BehaviorSubject.seeded(0);
+
   // public
   Stream<int> get round$ => _round$.stream;
   Stream<Duration> get roundTime$ => _roundTime$.stream;
   Stream<Duration> get restTime$ => _restTime$.stream;
   Stream<Duration> get trainingLength$ => _trainingLength$.stream;
+
+  Stream<int> get currentRound$ => _currentRound.stream;
+  Stream<String> get trainingRound$ {
+    return Stream.value("${_currentRound.value}/${_round$.value}");
+  }
 
   TrainingViewModel() {
     _round$.listen((_) {
@@ -33,7 +40,18 @@ class TrainingViewModel {
     });
   }
 
-  void _updateTrainingLength(/*int round, Duration length, Duration rest*/) {
+  void finishRound() {
+    var totalRound = _round$.value;
+    var currentRound = _currentRound.value;
+
+    _currentRound.add(min(totalRound, currentRound + 1));
+  }
+
+  void startTraining() {
+    _currentRound.add(1);
+  }
+
+  void _updateTrainingLength() {
     var total = Duration();
     var round = _round$.value;
     var length = _roundTime$.value;

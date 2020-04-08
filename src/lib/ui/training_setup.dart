@@ -255,7 +255,8 @@ class _TrainingSetupState extends State<TrainingSetupPage> {
       padding: const EdgeInsets.all(8.0),
       child: IconButton(
         onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (_) => TrainingPage()));
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (_) => TrainingPage(2, Duration(seconds: 5), Duration(seconds: 3))));
         },
         icon: Icon(
           Icons.play_circle_filled,
