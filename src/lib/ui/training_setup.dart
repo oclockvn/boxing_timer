@@ -256,7 +256,7 @@ class _TrainingSetupState extends State<TrainingSetupPage> {
       child: IconButton(
         onPressed: () {
           Navigator.of(context)
-              .push(MaterialPageRoute(builder: (_) => TrainingPage(2, Duration(seconds: 5), Duration(seconds: 3))));
+              .push(MaterialPageRoute(builder: (_) => TrainingPage(2, Duration(seconds: 3), Duration(seconds: 2))));
         },
         icon: Icon(
           Icons.play_circle_filled,

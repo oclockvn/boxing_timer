@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:src/app_const.dart';
 import 'package:src/core/extensions/duration_extension.dart';
+import 'package:src/core/services/timer_service.dart';
 
 class TrainingPage extends StatefulWidget {
   final int round;
@@ -24,21 +25,28 @@ class _TrainingState extends State<TrainingPage> {
   String _activity = "Get Ready";
   Duration _counter;
   bool _isTraining = false;
+  TimerService _timerService; // = TimerService();
 
   @override
   initState() {
     _counter = widget.roundTime;
     super.initState();
 
-    _gettingReady();
+    var total = _init();
+    _timerService = TimerService(
+        total: total,
+        onFinish: () {
+          Navigator.of(context).pop();
+        });
+    // _gettingReady();
   }
 
-  void _gettingReady() {
+  void _gettingReady(Duration total) {
     _counter = Duration(seconds: 5);
     Timer.periodic(Duration(seconds: 1), (timer) {
       if (timer.tick > 5) {
         _cancelTimer(timer);
-        _startTraining();
+        _startTraining(total);
       } else {
         setState(() {
           _counter = _counter - Duration(seconds: 1);
@@ -47,7 +55,7 @@ class _TrainingState extends State<TrainingPage> {
     });
   }
 
-  void _startTraining() {
+  Duration _init() {
     var total = Duration();
     var round = widget.round;
     var length = widget.roundTime;
@@ -62,9 +70,13 @@ class _TrainingState extends State<TrainingPage> {
       total = total + rest;
     }
 
-    var padding = round + max(0, round - 2); // round + relax
-    total = total + Duration(seconds: padding);
+    // var padding = round + max(0, round - 2); // round + relax
+    // total = total + Duration(seconds: padding);
 
+    return total;
+  }
+
+  void _startTraining(Duration total) {
     _timer = Timer.periodic(Duration(seconds: 1), (timer) {
       if (timer.tick > total.inSeconds) {
         Navigator.of(context).pop();
@@ -162,25 +174,27 @@ class _TrainingState extends State<TrainingPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        if (_isTraining)
+        if (_timerService.isRunning)
           IconButton(
             icon: Icon(
               Icons.pause_circle_filled,
               color: Color(COLORS.mainColor),
             ),
             onPressed: () {
-              _toggleTraining(stop: true);
+              // _toggleTraining(stop: true);
+              _timerService.stop();
             },
             iconSize: SIZES.iconButtonSize,
           ),
-        if (!_isTraining)
+        if (!_timerService.isRunning)
           IconButton(
             icon: Icon(
               Icons.play_circle_filled,
               color: Color(COLORS.mainColor),
             ),
             onPressed: () {
-              _toggleTraining(stop: true);
+              // _toggleTraining(stop: true);
+              _timerService.start();
             },
             iconSize: SIZES.iconButtonSize,
           ),
@@ -193,7 +207,8 @@ class _TrainingState extends State<TrainingPage> {
       alignment: AlignmentDirectional.center,
       children: <Widget>[
         Text(
-          _counter.print(),
+          _timerService.countdownDuration.print(),
+          // _counter.print(),
           style: TextStyle(fontSize: 64, fontWeight: FontWeight.bold),
         ),
         AspectRatio(
@@ -201,7 +216,7 @@ class _TrainingState extends State<TrainingPage> {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: CircularProgressIndicator(
-                value: _learnedPercentage,
+                value: _timerService.percentage,
                 strokeWidth: 16,
                 backgroundColor: Color(COLORS.textWhite),
                 valueColor: AlwaysStoppedAnimation<Color>(Color(COLORS.mainColor))),
@@ -217,16 +232,20 @@ class _TrainingState extends State<TrainingPage> {
       appBar: _appBar(),
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 32, vertical: 32),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            _roundWidget(),
-            Expanded(
-              child: _clockWidget(context),
-            ),
-            _buttonsWidget(),
-          ],
-        ),
+        child: AnimatedBuilder(
+            animation: _timerService,
+            builder: (context, child) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  _roundWidget(),
+                  Expanded(
+                    child: _clockWidget(context),
+                  ),
+                  _buttonsWidget(),
+                ],
+              );
+            }),
       ),
     );
   }
@@ -237,6 +256,7 @@ class _TrainingState extends State<TrainingPage> {
     _cancelTimer(_timer);
     _cancelTimer(_roundTimer);
     _cancelTimer(_restTimer);
+    _timerService.stop();
     super.dispose();
   }
 }
