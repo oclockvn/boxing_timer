@@ -23,9 +23,10 @@ class TimerService extends ChangeNotifier {
   }
 
   void _onTick(Timer timer) {
-    print('tick ${timer.tick}, elapsed ${_watch.elapsed.inSeconds} / ${total.inSeconds}');
     _percentage = _watch.elapsed.inSeconds / total.inSeconds;
     _currentDuration = _watch.elapsed - _period;
+    print(
+        'tick ${timer.tick} / duration ${_watch.elapsed.inSeconds} / ${total.inSeconds} = $_percentage%, countdown = ${countdownDuration.inSeconds}');
     notifyListeners();
 
     if (_watch.elapsed >= total) {
@@ -52,10 +53,10 @@ class TimerService extends ChangeNotifier {
     _timer = null;
 
     _watch.stop();
-    _currentDuration = _watch.elapsed;
+    // _currentDuration = _watch.elapsed;
 
-    _percentage = _watch.elapsed.inSeconds / total.inSeconds;
-    print('$_percentage%');
+    // _percentage = _watch.elapsed.inSeconds / total.inSeconds;
+    // print('$_percentage%');
 
     notifyListeners();
   }

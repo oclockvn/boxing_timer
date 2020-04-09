@@ -253,17 +253,19 @@ class _TrainingSetupState extends State<TrainingSetupPage> {
   Widget _buildStartButton(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: IconButton(
+      child: RaisedButton(
         onPressed: () {
           Navigator.of(context)
               .push(MaterialPageRoute(builder: (_) => TrainingPage(2, Duration(seconds: 3), Duration(seconds: 2))));
         },
-        icon: Icon(
-          Icons.play_circle_filled,
+        child: Text(
+          'Ready',
+          style: TextStyle(fontSize: 24, color: Color(COLORS.textWhite)),
         ),
-        padding: EdgeInsets.symmetric(vertical: 8),
+        padding: EdgeInsets.all(24),
         color: Color(COLORS.mainColor),
-        iconSize: SIZES.iconButtonSize,
+        // iconSize: SIZES.iconButtonSize,
+        shape: ContinuousRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(24))),
       ),
     );
   }
@@ -275,9 +277,31 @@ class _TrainingSetupState extends State<TrainingSetupPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          _buildHeader(),
           Expanded(
             child: _buildContent(),
+          ),
+          Expanded(
+            child: Center(
+              child: Column(
+                // mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                // crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(
+                    'TOTAL',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                  Text(
+                    '11:00',
+                    style: TextStyle(fontSize: 64, fontWeight: FontWeight.bold, color: Color(COLORS.mainColor)),
+                  ),
+                  Text(
+                    'minutes',
+                    style: TextStyle(fontSize: 16),
+                  ),
+                ],
+              ),
+            ),
           ),
           _buildStartButton(context),
         ],
