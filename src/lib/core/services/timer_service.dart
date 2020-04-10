@@ -11,7 +11,6 @@ class TimerService extends ChangeNotifier {
   Duration _currentDuration = Duration.zero;
   double _percentage = 0;
 
-  // Duration get currentDuration => _currentDuration;
   Duration get countdownDuration => total == Duration.zero ? Duration.zero : total - _currentDuration;
   double get percentage => _percentage;
   bool get isRunning => _timer != null;
@@ -25,8 +24,7 @@ class TimerService extends ChangeNotifier {
   void _onTick(Timer timer) {
     _percentage = _watch.elapsed.inSeconds / total.inSeconds;
     _currentDuration = _watch.elapsed - _period;
-    print(
-        'tick ${timer.tick} / duration ${_watch.elapsed.inSeconds} / ${total.inSeconds} = $_percentage%, countdown = ${countdownDuration.inSeconds}');
+
     notifyListeners();
 
     if (_watch.elapsed >= total) {
@@ -44,8 +42,6 @@ class TimerService extends ChangeNotifier {
 
     _timer = Timer.periodic(_period, _onTick);
     _watch.start();
-
-    // notifyListeners();
   }
 
   void stop() {
@@ -53,11 +49,6 @@ class TimerService extends ChangeNotifier {
     _timer = null;
 
     _watch.stop();
-    // _currentDuration = _watch.elapsed;
-
-    // _percentage = _watch.elapsed.inSeconds / total.inSeconds;
-    // print('$_percentage%');
-
     notifyListeners();
   }
 }
