@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:src/ui/training_setup.dart';
+import 'package:src/ui/setup.dart';
 
 void main() => runApp(MyApp());
 
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blueGrey,
       ),
-      home: TrainingSetupPage(),
+      home: SetupPage(),
       debugShowCheckedModeBanner: false,
     );
   }

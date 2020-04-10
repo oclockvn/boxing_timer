@@ -6,12 +6,12 @@ import 'package:src/core/extensions/duration_extension.dart';
 import 'package:src/ui/about.dart';
 import 'package:src/ui/training.dart';
 
-class TrainingSetupPage extends StatefulWidget {
+class SetupPage extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _TrainingSetupState();
+  State<StatefulWidget> createState() => _SetupState();
 }
 
-class _TrainingSetupState extends State<TrainingSetupPage> {
+class _SetupState extends State<SetupPage> {
   static const double _iconWidth = 50;
   static const double _itemPadding = 16;
   final _viewmodel = TrainingViewModel();
