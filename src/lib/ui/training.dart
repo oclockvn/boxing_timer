@@ -1,9 +1,7 @@
-import 'dart:async';
-import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:src/app_const.dart';
+import 'package:src/core/viewmodels/training_viewmodel.dart';
 import 'package:src/core/extensions/duration_extension.dart';
-import 'package:src/core/services/timer_service.dart';
 
 class TrainingPage extends StatefulWidget {
   final int round;
@@ -17,155 +15,34 @@ class TrainingPage extends StatefulWidget {
 }
 
 class _TrainingState extends State<TrainingPage> {
-  Timer _timer;
-  Timer _roundTimer;
-  Timer _restTimer;
-  double _learnedPercentage = 0;
-  int _currentRound = 0;
-  String _activity = "Get Ready";
-  Duration _counter;
-  bool _isTraining = false;
-  TimerService _timerService; // = TimerService();
-
+  TrainingViewModel _viewmodel;
   @override
   initState() {
-    _counter = widget.roundTime;
     super.initState();
 
-    var total = _init();
-    _timerService = TimerService(
-        total: total,
-        onFinish: () {
-          Navigator.of(context).pop();
-        });
-    // _gettingReady();
-  }
-
-  void _gettingReady(Duration total) {
-    _counter = Duration(seconds: 5);
-    Timer.periodic(Duration(seconds: 1), (timer) {
-      if (timer.tick > 5) {
-        _cancelTimer(timer);
-        _startTraining(total);
-      } else {
-        setState(() {
-          _counter = _counter - Duration(seconds: 1);
-        });
-      }
-    });
-  }
-
-  Duration _init() {
-    var total = Duration();
-    var round = widget.round;
-    var length = widget.roundTime;
-    var rest = widget.restTime;
-
-    for (var i = 0; i < round; i++) {
-      total = total + length;
-    }
-
-    // rest in middle of 2 rounds
-    for (var i = 0; i < round - 1; i++) {
-      total = total + rest;
-    }
-
-    // var padding = round + max(0, round - 2); // round + relax
-    // total = total + Duration(seconds: padding);
-
-    return total;
-  }
-
-  void _startTraining(Duration total) {
-    _timer = Timer.periodic(Duration(seconds: 1), (timer) {
-      if (timer.tick > total.inSeconds) {
+    _viewmodel = TrainingViewModel(
+      2,
+      Duration(seconds: 5),
+      Duration(seconds: 3),
+      () {
         Navigator.of(context).pop();
-      } else {
-        setState(() {
-          _learnedPercentage = timer.tick / total.inSeconds;
-          _counter = _counter - Duration(seconds: 1);
-        });
-      }
-    });
-
-    _toggleTraining();
-    _nextRound();
-  }
-
-  void _toggleTraining({bool stop = false}) {
-    setState(() {
-      _isTraining = !_isTraining;
-    });
-
-    // _timer.isActive = !_timer.isActive;
-    //_timer.
-    if (stop) {
-      _cancelTimer(_timer);
-      _cancelTimer(_roundTimer);
-      _cancelTimer(_restTimer);
-    }
-  }
-
-  void _cancelTimer(Timer timer) {
-    if (timer == null || !timer.isActive) {
-      return;
-    }
-
-    timer.cancel();
-  }
-
-  void _startingRound() {
-    setState(() {
-      _activity = "Training";
-    });
-
-    _counter = widget.roundTime;
-    // padding 1 second for next state
-    _roundTimer = Timer.periodic(widget.roundTime + Duration(seconds: 1), (timer) {
-      _cancelTimer(timer);
-      _startingRelax();
-    });
-  }
-
-  void _startingRelax() {
-    setState(() {
-      _activity = "Relaxing";
-    });
-
-    _counter = widget.restTime;
-    // padding 1 second for next state
-    _restTimer = Timer.periodic(widget.restTime + Duration(seconds: 1), (timer) {
-      _cancelTimer(timer);
-      _nextRound();
-    });
-  }
-
-  void _nextRound() {
-    _startingRound();
-    setState(() {
-      _currentRound++;
-    });
+      },
+    );
   }
 
   Widget _appBar() {
     return AppBar(
       title: const Text('Fight'),
-      // automaticallyImplyLeading: false,
+      automaticallyImplyLeading: false,
     );
   }
 
   Widget _roundWidget() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text(
-          _activity,
-          style: TextStyle(fontSize: 32),
-        ),
-        Text(
-          'Round $_currentRound/${widget.round}',
-          style: TextStyle(fontSize: 32),
-        )
+        Text('Round ', style: TextStyle(fontSize: 32, color: Color(COLORS.textWhite))),
+        Text('${_viewmodel.round}/${widget.round}', style: TextStyle(fontSize: 32, color: Color(COLORS.textWhite))),
       ],
     );
   }
@@ -174,54 +51,49 @@ class _TrainingState extends State<TrainingPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        if (_timerService.isRunning)
+        if (_viewmodel.isRunning)
           IconButton(
-            icon: Icon(
-              Icons.pause_circle_filled,
-              color: Color(COLORS.mainColor),
-            ),
-            onPressed: () {
-              // _toggleTraining(stop: true);
-              _timerService.stop();
-            },
+            icon: Icon(Icons.pause_circle_filled, color: Colors.white),
+            onPressed: _viewmodel.stop,
             iconSize: SIZES.iconButtonSize,
           ),
-        if (!_timerService.isRunning)
+        if (!_viewmodel.isRunning)
           IconButton(
-            icon: Icon(
-              Icons.play_circle_filled,
-              color: Color(COLORS.mainColor),
-            ),
-            onPressed: () {
-              // _toggleTraining(stop: true);
-              _timerService.start();
-            },
+            icon: Icon(Icons.play_circle_filled, color: Colors.white),
+            onPressed: _viewmodel.start,
             iconSize: SIZES.iconButtonSize,
           ),
       ],
     );
   }
 
-  Widget _clockWidget(context) {
-    return Stack(
-      alignment: AlignmentDirectional.center,
+  Widget _timerWidget() {
+    String state;
+    switch (_viewmodel.state) {
+      case RoundState.Training:
+        state = 'Training';
+        break;
+      case RoundState.Relax:
+        state = 'Relaxing';
+        break;
+      default:
+        state = 'Get Ready';
+        break;
+    }
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
+        Text(state, style: TextStyle(fontSize: 24, color: Color(COLORS.textWhite))),
         Text(
-          _timerService.countdownDuration.print(),
-          // _counter.print(),
-          style: TextStyle(fontSize: 64, fontWeight: FontWeight.bold),
-        ),
-        AspectRatio(
-          aspectRatio: 1 / 1,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CircularProgressIndicator(
-                value: _timerService.percentage,
-                strokeWidth: 16,
-                backgroundColor: Color(COLORS.textWhite),
-                valueColor: AlwaysStoppedAnimation<Color>(Color(COLORS.mainColor))),
+          _viewmodel.remaining.print(),
+          style: TextStyle(
+            fontSize: 86,
+            fontWeight: FontWeight.bold,
+            color: Color(COLORS.textWhite),
           ),
-        )
+        ),
+        _roundWidget(),
       ],
     );
   }
@@ -230,33 +102,25 @@ class _TrainingState extends State<TrainingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar(),
-      body: Container(
-        padding: EdgeInsets.symmetric(horizontal: 32, vertical: 32),
-        child: AnimatedBuilder(
-            animation: _timerService,
-            builder: (context, child) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  _roundWidget(),
-                  Expanded(
-                    child: _clockWidget(context),
-                  ),
-                  _buttonsWidget(),
-                ],
-              );
-            }),
+      body: AnimatedBuilder(
+        animation: _viewmodel,
+        builder: (_context, _widget) => Container(
+          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 32),
+          color: _viewmodel.state == RoundState.Training ? Colors.green : Colors.red,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Expanded(child: _timerWidget()),
+              _buttonsWidget(),
+            ],
+          ),
+        ),
       ),
     );
   }
 
   @override
   void dispose() {
-    print('disposed');
-    _cancelTimer(_timer);
-    _cancelTimer(_roundTimer);
-    _cancelTimer(_restTimer);
-    _timerService.stop();
     super.dispose();
   }
 }

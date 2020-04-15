@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:src/app_const.dart';
 import 'package:src/core/stream_observer.dart';
-import 'package:src/core/viewmodels/training_viewmodel.dart';
+import 'package:src/core/viewmodels/setup_viewmodel.dart';
 import 'package:src/core/extensions/duration_extension.dart';
 import 'package:src/ui/about.dart';
 import 'package:src/ui/training.dart';
@@ -14,7 +14,7 @@ class SetupPage extends StatefulWidget {
 class _SetupState extends State<SetupPage> {
   static const double _iconWidth = 50;
   static const double _itemPadding = 16;
-  final _viewmodel = TrainingViewModel();
+  final _viewmodel = SetupViewModel();
 
   Widget _buildAppBar(BuildContext context) {
     return AppBar(
@@ -31,44 +31,10 @@ class _SetupState extends State<SetupPage> {
     );
   }
 
-  Widget _buildHeaderText(String text) {
-    return Text(
-      text,
-      style: TextStyle(color: Color(COLORS.textWhite), fontSize: 20),
-    );
-  }
-
-  Widget _buildHeader() {
-    return Container(
-      margin: EdgeInsets.only(top: 8, left: 8, right: 8),
-      child: Material(
-          shape: ContinuousRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(24))),
-          elevation: 8,
-          color: Color(COLORS.mainColor),
-          child: Padding(
-            padding: const EdgeInsets.all(24.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                _buildHeaderText('TRAINING LENGTH'),
-                StreamObserver<Duration>(
-                  stream: _viewmodel.trainingLength$,
-                  onSuccess: (_, Duration length) => _buildHeaderText(length.print()),
-                ),
-              ],
-            ),
-          )),
-    );
-  }
-
   Widget _buildLeadingIcon(IconData icon) {
     return Padding(
       padding: EdgeInsets.only(right: 16),
-      child: Icon(
-        icon,
-        size: 64,
-        color: Color(COLORS.redColor),
-      ),
+      child: Icon(icon, size: 64, color: Color(COLORS.redColor)),
     );
   }
 
@@ -96,22 +62,14 @@ class _SetupState extends State<SetupPage> {
         Row(
           children: <Widget>[
             IconButton(
-              icon: Icon(
-                Icons.remove_circle_outline,
-              ),
+              icon: Icon(Icons.remove_circle_outline),
               iconSize: _iconWidth,
-              onPressed: () {
-                _viewmodel.decRoundTime();
-              },
+              onPressed: _viewmodel.decRoundTime,
             ),
             IconButton(
-              icon: Icon(
-                Icons.add_circle_outline,
-              ),
+              icon: Icon(Icons.add_circle_outline),
               iconSize: _iconWidth,
-              onPressed: () {
-                _viewmodel.incRoundTime();
-              },
+              onPressed: _viewmodel.incRoundTime,
             ),
           ],
         ),
@@ -143,22 +101,14 @@ class _SetupState extends State<SetupPage> {
         Row(
           children: <Widget>[
             IconButton(
-              icon: Icon(
-                Icons.remove_circle_outline,
-              ),
+              icon: Icon(Icons.remove_circle_outline),
               iconSize: _iconWidth,
-              onPressed: () {
-                _viewmodel.decRestTime();
-              },
+              onPressed: _viewmodel.decRestTime,
             ),
             IconButton(
-              icon: Icon(
-                Icons.add_circle_outline,
-              ),
+              icon: Icon(Icons.add_circle_outline),
               iconSize: _iconWidth,
-              onPressed: () {
-                _viewmodel.incRestTime();
-              },
+              onPressed: _viewmodel.incRestTime,
             ),
           ],
         ),
@@ -190,22 +140,14 @@ class _SetupState extends State<SetupPage> {
         Row(
           children: <Widget>[
             IconButton(
-              icon: Icon(
-                Icons.remove_circle_outline,
-              ),
+              icon: Icon(Icons.remove_circle_outline),
               iconSize: _iconWidth,
-              onPressed: () {
-                _viewmodel.decRound();
-              },
+              onPressed: _viewmodel.decRound,
             ),
             IconButton(
-              icon: Icon(
-                Icons.add_circle_outline,
-              ),
+              icon: Icon(Icons.add_circle_outline),
               iconSize: _iconWidth,
-              onPressed: () {
-                _viewmodel.incRound();
-              },
+              onPressed: _viewmodel.incRound,
             ),
           ],
         ),
@@ -217,8 +159,11 @@ class _SetupState extends State<SetupPage> {
     return Container(
       child: SizedBox.shrink(),
       margin: EdgeInsets.symmetric(horizontal: _itemPadding),
-      decoration:
-          BoxDecoration(border: Border(bottom: BorderSide(color: Colors.black26, style: BorderStyle.solid, width: 1))),
+      decoration: BoxDecoration(
+        border: Border(
+          bottom: BorderSide(color: Colors.black26, style: BorderStyle.solid, width: 1),
+        ),
+      ),
     );
   }
 
@@ -256,7 +201,8 @@ class _SetupState extends State<SetupPage> {
       child: RaisedButton(
         onPressed: () {
           Navigator.of(context)
-              .push(MaterialPageRoute(builder: (_) => TrainingPage(2, Duration(seconds: 3), Duration(seconds: 2))));
+              .push(MaterialPageRoute(builder: (_) => TrainingPage(2, Duration(seconds: 5), Duration(seconds: 2))));
+          // _viewmodel.startTraining();
         },
         child: Text(
           'Ready',
@@ -277,9 +223,7 @@ class _SetupState extends State<SetupPage> {
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Expanded(
-            child: _buildContent(),
-          ),
+          Expanded(child: _buildContent()),
           Expanded(
             child: Center(
               child: Column(
@@ -287,18 +231,12 @@ class _SetupState extends State<SetupPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 // crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-                  Text(
-                    'TOTAL',
-                    style: TextStyle(fontSize: 16),
-                  ),
+                  Text('TOTAL', style: TextStyle(fontSize: 16)),
                   Text(
                     '11:00',
                     style: TextStyle(fontSize: 64, fontWeight: FontWeight.bold, color: Color(COLORS.mainColor)),
                   ),
-                  Text(
-                    'minutes',
-                    style: TextStyle(fontSize: 16),
-                  ),
+                  Text('minutes', style: TextStyle(fontSize: 16)),
                 ],
               ),
             ),
