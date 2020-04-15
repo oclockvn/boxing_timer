@@ -59,6 +59,14 @@ class SetupViewModel {
     _round$.add(max(1, _round$.value - 1));
   }
 
+  void setRoundTime(Duration d) {
+    _roundTime$.add(d);
+  }
+
+  void setRestTime(Duration d) {
+    _restTime$.add(d);
+  }
+
   void incRestTime() {
     _restTime$.add(_validateRestTime(_restTime$.value + _delta));
   }

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import "package:rxdart/rxdart.dart";
@@ -18,6 +19,7 @@ class _SetupState extends State<SetupPage> {
   static const double _iconWidth = 50;
   static const double _itemPadding = 16;
   final _viewmodel = SetupViewModel();
+  Duration _picker = Duration.zero;
 
   Widget _buildAppBar(BuildContext context) {
     return AppBar(
@@ -41,81 +43,147 @@ class _SetupState extends State<SetupPage> {
     );
   }
 
-  Widget _roundLengthWidget() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        _buildLeadingIcon(Icons.timelapse),
-        Expanded(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              StreamObserver<Duration>(
-                stream: _viewmodel.roundTime$,
-                onSuccess: (_, Duration data) => Text(
-                  data.print(),
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24, color: Color(COLORS.redColor)),
-                ),
-              ),
-              Text('ROUND LENGTH'),
-            ],
-          ),
+  Widget _showTimerPickerPopup(Duration initialDuration) {
+    return AlertDialog(
+      actions: <Widget>[
+        FlatButton(
+          child: Text('Cancel'),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
         ),
-        Row(
-          children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.remove),
-              iconSize: _iconWidth,
-              onPressed: _viewmodel.decRoundTime,
-            ),
-            IconButton(
-              icon: Icon(Icons.add),
-              iconSize: _iconWidth,
-              onPressed: _viewmodel.incRoundTime,
-            ),
-          ],
+        FlatButton(
+          child: Text('OK'),
+          onPressed: () {
+            Navigator.of(context).pop(_picker);
+          },
         ),
       ],
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          CupertinoTimerPicker(
+            mode: CupertinoTimerPickerMode.ms,
+            onTimerDurationChanged: (Duration d) {
+              if (d.inSeconds >= 10) {
+                _picker = d;
+              }
+            },
+            minuteInterval: 1,
+            secondInterval: 1,
+            initialTimerDuration: initialDuration,
+            alignment: Alignment.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _roundLengthWidget() {
+    return GestureDetector(
+      onTap: () async {
+        _viewmodel.roundTime$.take(1).listen((Duration roundTime) {
+          showDialog(
+            context: context,
+            builder: (_) => _showTimerPickerPopup(roundTime),
+            barrierDismissible: false,
+          ).then((pick) {
+            if (pick != null) {
+              _viewmodel.setRoundTime(pick);
+            }
+          });
+        });
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          _buildLeadingIcon(Icons.timelapse),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                StreamObserver<Duration>(
+                  stream: _viewmodel.roundTime$,
+                  onSuccess: (_, Duration data) => Text(
+                    data.print(),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24, color: Color(COLORS.redColor)),
+                  ),
+                ),
+                Text('ROUND LENGTH'),
+              ],
+            ),
+          ),
+          Row(
+            children: <Widget>[
+              IconButton(
+                icon: Icon(Icons.remove),
+                iconSize: _iconWidth,
+                onPressed: _viewmodel.decRoundTime,
+              ),
+              IconButton(
+                icon: Icon(Icons.add),
+                iconSize: _iconWidth,
+                onPressed: _viewmodel.incRoundTime,
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
   Widget _restTimeWidget() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        _buildLeadingIcon(Icons.hourglass_empty),
-        Expanded(
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              StreamObserver<Duration>(
-                stream: _viewmodel.restTime$,
-                onSuccess: (_, Duration data) => Text(
-                  data.print(),
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24, color: Color(COLORS.redColor)),
+    return GestureDetector(
+      onTap: () async {
+        _viewmodel.restTime$.take(1).listen((Duration duration) {
+          showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (_) => _showTimerPickerPopup(duration),
+          ).then((pick) {
+            if (pick != null) {
+              _viewmodel.setRestTime(pick);
+            }
+          });
+        });
+      },
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          _buildLeadingIcon(Icons.hourglass_empty),
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                StreamObserver<Duration>(
+                  stream: _viewmodel.restTime$,
+                  onSuccess: (_, Duration data) => Text(
+                    data.print(),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24, color: Color(COLORS.redColor)),
+                  ),
                 ),
+                Text('REST TIME'),
+              ],
+            ),
+          ),
+          Row(
+            children: <Widget>[
+              IconButton(
+                icon: Icon(Icons.remove),
+                iconSize: _iconWidth,
+                onPressed: _viewmodel.decRestTime,
               ),
-              Text('REST TIME'),
+              IconButton(
+                icon: Icon(Icons.add),
+                iconSize: _iconWidth,
+                onPressed: _viewmodel.incRestTime,
+              ),
             ],
           ),
-        ),
-        Row(
-          children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.remove),
-              iconSize: _iconWidth,
-              onPressed: _viewmodel.decRestTime,
-            ),
-            IconButton(
-              icon: Icon(Icons.add),
-              iconSize: _iconWidth,
-              onPressed: _viewmodel.incRestTime,
-            ),
-          ],
-        ),
-      ],
+        ],
+      ),
     );
   }
 
