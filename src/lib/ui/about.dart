@@ -22,11 +22,11 @@ class AboutPage extends StatelessWidget {
               subtitle: Text('oclockvn@gmail.com'),
               contentPadding: EdgeInsets.all(0),
             ),
-            ListTile(
-              leading: Icon(Icons.link),
-              title: Text('https://github.com/oclockvn/boxing_timer'),
-              contentPadding: EdgeInsets.all(0),
-            )
+            // ListTile(
+            //   leading: Icon(Icons.link),
+            //   title: Text('https://github.com/oclockvn/boxing_timer'),
+            //   contentPadding: EdgeInsets.all(0),
+            // )
           ],
         ),
       ),
