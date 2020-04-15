@@ -48,9 +48,15 @@ class _TrainingState extends State<TrainingPage> {
   }
 
   Widget _buttonsWidget() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+    return Stack(
+      alignment: AlignmentDirectional.center,
       children: <Widget>[
+        if (!_viewmodel.isRunning)
+          IconButton(
+            icon: Icon(Icons.play_circle_filled, color: Colors.white),
+            onPressed: _viewmodel.start,
+            iconSize: SIZES.iconButtonSize,
+          ),
         if (_viewmodel.isRunning)
           IconButton(
             icon: Icon(Icons.pause_circle_filled, color: Colors.white),
@@ -58,10 +64,18 @@ class _TrainingState extends State<TrainingPage> {
             iconSize: SIZES.iconButtonSize,
           ),
         if (!_viewmodel.isRunning)
-          IconButton(
-            icon: Icon(Icons.play_circle_filled, color: Colors.white),
-            onPressed: _viewmodel.start,
-            iconSize: SIZES.iconButtonSize,
+          Positioned(
+            right: SIZES.iconButtonSize + 16,
+            child: Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+              ),
+              child: IconButton(
+                icon: Icon(Icons.skip_next, color: Color(COLORS.mainColor)),
+                onPressed: _viewmodel.next,
+              ),
+            ),
           ),
       ],
     );
