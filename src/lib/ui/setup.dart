@@ -65,12 +65,12 @@ class _SetupState extends State<SetupPage> {
         Row(
           children: <Widget>[
             IconButton(
-              icon: Icon(Icons.remove_circle_outline),
+              icon: Icon(Icons.remove),
               iconSize: _iconWidth,
               onPressed: _viewmodel.decRoundTime,
             ),
             IconButton(
-              icon: Icon(Icons.add_circle_outline),
+              icon: Icon(Icons.add),
               iconSize: _iconWidth,
               onPressed: _viewmodel.incRoundTime,
             ),
@@ -104,12 +104,12 @@ class _SetupState extends State<SetupPage> {
         Row(
           children: <Widget>[
             IconButton(
-              icon: Icon(Icons.remove_circle_outline),
+              icon: Icon(Icons.remove),
               iconSize: _iconWidth,
               onPressed: _viewmodel.decRestTime,
             ),
             IconButton(
-              icon: Icon(Icons.add_circle_outline),
+              icon: Icon(Icons.add),
               iconSize: _iconWidth,
               onPressed: _viewmodel.incRestTime,
             ),
@@ -143,12 +143,12 @@ class _SetupState extends State<SetupPage> {
         Row(
           children: <Widget>[
             IconButton(
-              icon: Icon(Icons.remove_circle_outline),
+              icon: Icon(Icons.remove),
               iconSize: _iconWidth,
               onPressed: _viewmodel.decRound,
             ),
             IconButton(
-              icon: Icon(Icons.add_circle_outline),
+              icon: Icon(Icons.add),
               iconSize: _iconWidth,
               onPressed: _viewmodel.incRound,
             ),
