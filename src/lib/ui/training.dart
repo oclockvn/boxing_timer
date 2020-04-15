@@ -66,8 +66,8 @@ class _TrainingState extends State<TrainingPage> {
             iconSize: SIZES.iconButtonSize,
           ),
         if (!_viewmodel.isRunning)
-          Positioned(
-            right: SIZES.iconButtonSize + 16,
+          Align(
+            alignment: Alignment.centerRight,
             child: Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
