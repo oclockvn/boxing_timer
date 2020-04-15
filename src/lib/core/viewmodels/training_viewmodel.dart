@@ -39,7 +39,7 @@ class TrainingViewModel extends ChangeNotifier {
     }
 
     // preparing time
-    _jobs.push(_Round(RoundState.Preparing, Duration(seconds: 6)));
+    _jobs.push(_Round(RoundState.Preparing, Duration(seconds: 5)));
   }
 
   void start() {

@@ -21,13 +21,15 @@ class _TrainingState extends State<TrainingPage> {
     super.initState();
 
     _viewmodel = TrainingViewModel(
-      2,
-      Duration(seconds: 5),
-      Duration(seconds: 3),
+      widget.round,
+      widget.roundTime,
+      widget.restTime,
       () {
         Navigator.of(context).pop();
       },
     );
+
+    _viewmodel.start();
   }
 
   Widget _appBar() {

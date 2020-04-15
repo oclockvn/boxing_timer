@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+
+import "package:rxdart/rxdart.dart";
+
 import 'package:src/app_const.dart';
 import 'package:src/core/stream_observer.dart';
 import 'package:src/core/viewmodels/setup_viewmodel.dart';
@@ -200,9 +203,22 @@ class _SetupState extends State<SetupPage> {
       padding: const EdgeInsets.all(8.0),
       child: RaisedButton(
         onPressed: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (_) => TrainingPage(2, Duration(seconds: 5), Duration(seconds: 2))));
-          // _viewmodel.startTraining();
+          CombineLatestStream.combine3(
+            _viewmodel.round$,
+            _viewmodel.roundTime$,
+            _viewmodel.restTime$,
+            (int round, Duration time, Duration rest) => {"round": round, "time": time, "rest": rest},
+          ).take(1).listen((map) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => TrainingPage(
+                  map["round"] as int,
+                  map["time"] as Duration,
+                  map["rest"] as Duration,
+                ),
+              ),
+            );
+          });
         },
         child: Text(
           'Ready',
@@ -216,6 +232,29 @@ class _SetupState extends State<SetupPage> {
     );
   }
 
+  Widget _totalWidget() {
+    return Column(
+      // mainAxisSize: MainAxisSize.max,
+      mainAxisAlignment: MainAxisAlignment.center,
+      // crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Text('TOTAL', style: TextStyle(fontSize: 16)),
+        StreamObserver(
+          stream: _viewmodel.trainingLength$,
+          onSuccess: (_, Duration length) => Text(
+            length.print(),
+            style: TextStyle(
+              fontSize: 64,
+              fontWeight: FontWeight.bold,
+              color: Color(COLORS.mainColor),
+            ),
+          ),
+        ),
+        Text('minutes', style: TextStyle(fontSize: 16)),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -225,21 +264,7 @@ class _SetupState extends State<SetupPage> {
         children: <Widget>[
           Expanded(child: _buildContent()),
           Expanded(
-            child: Center(
-              child: Column(
-                // mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
-                // crossAxisAlignment: CrossAxisAlignment.center,
-                children: <Widget>[
-                  Text('TOTAL', style: TextStyle(fontSize: 16)),
-                  Text(
-                    '11:00',
-                    style: TextStyle(fontSize: 64, fontWeight: FontWeight.bold, color: Color(COLORS.mainColor)),
-                  ),
-                  Text('minutes', style: TextStyle(fontSize: 16)),
-                ],
-              ),
-            ),
+            child: Center(child: _totalWidget()),
           ),
           _buildStartButton(context),
         ],
