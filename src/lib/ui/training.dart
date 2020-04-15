@@ -106,7 +106,7 @@ class _TrainingState extends State<TrainingPage> {
         animation: _viewmodel,
         builder: (_context, _widget) => Container(
           padding: EdgeInsets.symmetric(horizontal: 32, vertical: 32),
-          color: _viewmodel.state == RoundState.Training ? Colors.green : Colors.red,
+          color: _viewmodel.state == RoundState.Training ? Colors.red : Colors.green,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
