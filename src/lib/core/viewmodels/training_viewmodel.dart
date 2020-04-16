@@ -15,6 +15,7 @@ class _Round {
 class TrainingViewModel extends ChangeNotifier {
   static const Duration _second = const Duration(seconds: 1);
   final VoidCallback onFinish;
+  final VoidCallback onPlaySound;
   Stopwatch _watch = Stopwatch();
   StackOf<_Round> _jobs = StackOf<_Round>();
   Timer _timer;
@@ -29,7 +30,7 @@ class TrainingViewModel extends ChangeNotifier {
   RoundState get state => _current == null ? null : _current.state;
   int get round => _round;
 
-  TrainingViewModel(int round, Duration training, Duration relax, this.onFinish) {
+  TrainingViewModel(int round, Duration training, Duration relax, this.onFinish, this.onPlaySound) {
     for (var i = 0; i < round; i++) {
       _jobs.push(_Round(RoundState.Training, training));
 
@@ -57,13 +58,13 @@ class TrainingViewModel extends ChangeNotifier {
 
   void next() {
     if (_jobs.isNotEmpty) {
+      this.onPlaySound();
       _current = _jobs.pop();
       if (_current.state == RoundState.Training) {
         _round++;
       }
       _resume();
       _watch.reset();
-      // _watch.start();
     } else {
       stop();
       onFinish();

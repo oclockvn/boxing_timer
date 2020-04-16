@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:audioplayers/audio_cache.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:src/app_const.dart';
 import 'package:src/core/viewmodels/training_viewmodel.dart';
 import 'package:src/core/extensions/duration_extension.dart';
@@ -16,18 +18,20 @@ class TrainingPage extends StatefulWidget {
 
 class _TrainingState extends State<TrainingPage> {
   TrainingViewModel _viewmodel;
+  static AudioCache _audio = AudioCache();
+  static const String _soundPath = "start.mp3";
   @override
   initState() {
     super.initState();
 
-    _viewmodel = TrainingViewModel(
-      widget.round,
-      widget.roundTime,
-      widget.restTime,
-      () {
-        Navigator.of(context).pop();
-      },
-    );
+    _audio.disableLog();
+    _audio.load(_soundPath); // preload audio
+
+    _viewmodel = TrainingViewModel(widget.round, widget.roundTime, widget.restTime, () {
+      Navigator.of(context).pop();
+    }, () {
+      _playSound();
+    });
 
     _viewmodel.start();
   }
@@ -133,6 +137,10 @@ class _TrainingState extends State<TrainingPage> {
         ),
       ),
     );
+  }
+
+  void _playSound() {
+    _audio.play(_soundPath, mode: PlayerMode.LOW_LATENCY, volume: 1);
   }
 
   @override
