@@ -4,6 +4,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:src/app_const.dart';
 import 'package:src/core/viewmodels/training_viewmodel.dart';
 import 'package:src/core/extensions/duration_extension.dart';
+import 'package:wakelock/wakelock.dart';
 
 class TrainingPage extends StatefulWidget {
   final int round;
@@ -20,6 +21,7 @@ class _TrainingState extends State<TrainingPage> {
   TrainingViewModel _viewmodel;
   static AudioCache _audio = AudioCache();
   static const String _soundPath = "start.mp3";
+
   @override
   initState() {
     super.initState();
@@ -34,6 +36,7 @@ class _TrainingState extends State<TrainingPage> {
     });
 
     _viewmodel.start();
+    Wakelock.enable();
   }
 
   Widget _appBar() {
@@ -145,6 +148,7 @@ class _TrainingState extends State<TrainingPage> {
 
   @override
   void dispose() {
+    Wakelock.disable();
     super.dispose();
   }
 }
