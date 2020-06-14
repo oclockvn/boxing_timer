@@ -1,7 +1,18 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:src/ui/setup.dart';
 
-void main() => runApp(MyApp());
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+
+void main() {
+  // Pass all uncaught errors to Crashlytics.
+  FlutterError.onError = Crashlytics.instance.recordFlutterError;
+
+  runZoned(() {
+    runApp(MyApp());
+  }, onError: Crashlytics.instance.recordError);
+}
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
