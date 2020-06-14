@@ -1,4 +1,4 @@
-package com.example.src
+package oclockvn.b7boxingtimer
 
 import androidx.annotation.NonNull;
 import io.flutter.embedding.android.FlutterActivity
