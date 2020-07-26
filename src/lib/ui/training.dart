@@ -30,6 +30,7 @@ class _TrainingState extends State<TrainingPage> {
     _audio.load(_soundPath); // preload audio
 
     _viewmodel = TrainingViewModel(widget.round, widget.roundTime, widget.restTime, () {
+      _playSound();
       Navigator.of(context).pop();
     }, () {
       _playSound();
