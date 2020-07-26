@@ -23,10 +23,10 @@ class _SetupState extends State<SetupPage> {
 
   Widget _buildAppBar(BuildContext context) {
     return AppBar(
-      title: Text('Boxing Timer'),
+      title: const Text('Boxing Timer'),
       actions: <Widget>[
         IconButton(
-          icon: Icon(Icons.info),
+          icon: const Icon(Icons.info),
           onPressed: () {
             print('info');
             Navigator.of(context).push(MaterialPageRoute(builder: (_) => AboutPage()));
@@ -38,7 +38,7 @@ class _SetupState extends State<SetupPage> {
 
   Widget _buildLeadingIcon(IconData icon) {
     return Padding(
-      padding: EdgeInsets.only(right: 16),
+      padding: const EdgeInsets.only(right: 16),
       child: Icon(icon, size: 64, color: Color(COLORS.redColor)),
     );
   }
@@ -47,13 +47,13 @@ class _SetupState extends State<SetupPage> {
     return AlertDialog(
       actions: <Widget>[
         FlatButton(
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
           onPressed: () {
             Navigator.of(context).pop();
           },
         ),
         FlatButton(
-          child: Text('OK'),
+          child: const Text('OK'),
           onPressed: () {
             Navigator.of(context).pop(_picker);
           },
@@ -117,12 +117,12 @@ class _SetupState extends State<SetupPage> {
           Row(
             children: <Widget>[
               IconButton(
-                icon: Icon(Icons.remove),
+                icon: const Icon(Icons.remove),
                 iconSize: _iconWidth,
                 onPressed: _viewmodel.decRoundTime,
               ),
               IconButton(
-                icon: Icon(Icons.add),
+                icon: const Icon(Icons.add),
                 iconSize: _iconWidth,
                 onPressed: _viewmodel.incRoundTime,
               ),
@@ -171,12 +171,12 @@ class _SetupState extends State<SetupPage> {
           Row(
             children: <Widget>[
               IconButton(
-                icon: Icon(Icons.remove),
+                icon: const Icon(Icons.remove),
                 iconSize: _iconWidth,
                 onPressed: _viewmodel.decRestTime,
               ),
               IconButton(
-                icon: Icon(Icons.add),
+                icon: const Icon(Icons.add),
                 iconSize: _iconWidth,
                 onPressed: _viewmodel.incRestTime,
               ),
@@ -211,12 +211,12 @@ class _SetupState extends State<SetupPage> {
         Row(
           children: <Widget>[
             IconButton(
-              icon: Icon(Icons.remove),
+              icon: const Icon(Icons.remove),
               iconSize: _iconWidth,
               onPressed: _viewmodel.decRound,
             ),
             IconButton(
-              icon: Icon(Icons.add),
+              icon: const Icon(Icons.add),
               iconSize: _iconWidth,
               onPressed: _viewmodel.incRound,
             ),
@@ -228,9 +228,9 @@ class _SetupState extends State<SetupPage> {
 
   Widget _buildSeparator() {
     return Container(
-      child: SizedBox.shrink(),
+      child: const SizedBox.shrink(),
       margin: EdgeInsets.symmetric(horizontal: _itemPadding),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         border: Border(
           bottom: BorderSide(color: Colors.black26, style: BorderStyle.solid, width: 1),
         ),
@@ -240,7 +240,7 @@ class _SetupState extends State<SetupPage> {
 
   Widget _buildContent() {
     return Container(
-      margin: EdgeInsets.all(8),
+      margin: const EdgeInsets.all(8),
       // decoration: BoxDecoration(
       //   border: Border.all(color: Colors.black, style: BorderStyle.solid, width: 1),
       // ),
@@ -290,35 +290,32 @@ class _SetupState extends State<SetupPage> {
         },
         child: Text(
           'Ready',
-          style: TextStyle(fontSize: 24, color: Color(COLORS.textWhite)),
+          style: const TextStyle(fontSize: 24, color: Color(COLORS.textWhite)),
         ),
-        padding: EdgeInsets.all(24),
-        color: Color(COLORS.mainColor),
-        // iconSize: SIZES.iconButtonSize,
-        shape: ContinuousRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(24))),
+        padding: const EdgeInsets.all(24),
+        color: const Color(COLORS.mainColor),
+        shape: const ContinuousRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(24))),
       ),
     );
   }
 
   Widget _totalWidget() {
     return Column(
-      // mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.center,
-      // crossAxisAlignment: CrossAxisAlignment.center,
       children: <Widget>[
         Text('TOTAL', style: TextStyle(fontSize: 16)),
         StreamObserver(
           stream: _viewmodel.trainingLength$,
           onSuccess: (_, Duration length) => Text(
             length.print(),
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 64,
               fontWeight: FontWeight.bold,
               color: Color(COLORS.mainColor),
             ),
           ),
         ),
-        Text('minutes', style: TextStyle(fontSize: 16)),
+        const Text('minutes', style: TextStyle(fontSize: 16)),
       ],
     );
   }
