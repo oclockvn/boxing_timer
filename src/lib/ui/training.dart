@@ -51,8 +51,8 @@ class _TrainingState extends State<TrainingPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text('Round ', style: TextStyle(fontSize: 32, color: Color(COLORS.textWhite))),
-        Text('${_viewmodel.round}/${widget.round}', style: TextStyle(fontSize: 32, color: Color(COLORS.textWhite))),
+        const Text('Round ', style: TextStyle(fontSize: 32, color: Color(COLORS.textWhite))),
+        Text('${_viewmodel.round}/${widget.round}', style: const TextStyle(fontSize: 32, color: Color(COLORS.textWhite))),
       ],
     );
   }
@@ -63,13 +63,13 @@ class _TrainingState extends State<TrainingPage> {
       children: <Widget>[
         if (!_viewmodel.isRunning)
           IconButton(
-            icon: Icon(Icons.play_circle_filled, color: Colors.white),
+            icon: const Icon(Icons.play_circle_filled, color: Colors.white),
             onPressed: _viewmodel.start,
             iconSize: SIZES.iconButtonSize,
           ),
         if (_viewmodel.isRunning)
           IconButton(
-            icon: Icon(Icons.pause_circle_filled, color: Colors.white),
+            icon: const Icon(Icons.pause_circle_filled, color: Colors.white),
             onPressed: _viewmodel.stop,
             iconSize: SIZES.iconButtonSize,
           ),
@@ -77,12 +77,12 @@ class _TrainingState extends State<TrainingPage> {
           Align(
             alignment: Alignment.centerRight,
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 shape: BoxShape.circle,
                 color: Colors.white,
               ),
               child: IconButton(
-                icon: Icon(Icons.skip_next, color: Color(COLORS.mainColor)),
+                icon: const Icon(Icons.skip_next, color: Color(COLORS.mainColor)),
                 onPressed: _viewmodel.next,
               ),
             ),
@@ -108,10 +108,10 @@ class _TrainingState extends State<TrainingPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
-        Text(state, style: TextStyle(fontSize: 24, color: Color(COLORS.textWhite))),
+        Text(state, style: const TextStyle(fontSize: 24, color: Color(COLORS.textWhite))),
         Text(
           _viewmodel.remaining.print(),
-          style: TextStyle(
+          style: const TextStyle(
             fontSize: 86,
             fontWeight: FontWeight.bold,
             color: Color(COLORS.textWhite),
@@ -129,7 +129,7 @@ class _TrainingState extends State<TrainingPage> {
       body: AnimatedBuilder(
         animation: _viewmodel,
         builder: (_context, _widget) => Container(
-          padding: EdgeInsets.symmetric(horizontal: 32, vertical: 32),
+          padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 32),
           color: _viewmodel.state == RoundState.Training ? Colors.red : Colors.green,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
